@@ -224,12 +224,35 @@ function remove(input) {
         {
             name: "action",
             type: "list",
-            message: `In order to process the new employee, please enter the new employee's ID.  Do you have the new employee's ID? (View All Employees to get)`,
+            message: `In order to process the employee, please enter the employee's ID.  Do you have the employee's ID? (View All Employees to get)`,
             choices: [promptQ.yes, promptQ.no]
         }
     ]).then(answer => {
-        if (input === 'delete' && answer.action === "yes") removeEmployee();
+        if (input === 'delete' && answer.action === "yes") deleteEmployee();
         else if (input === 'role' && answer.action === 'yes') updateRole();
         else viewAllEmployees();
-    })
-}
+    });
+};
+
+//function to delete an employee
+
+async function deleteEmployee() {
+    const answer = await inquirer.prompt([
+        {
+            name: "first",
+            type: "input",
+            message: "Please enter the ID of the employee you wish to delete: "
+        }
+    ]);
+    connection.query('DELETE FROM employee WHERE ?', 
+    {
+        id: answer.first
+    },
+    function (err) {
+        if (err) throw err;
+        }
+    )
+    console.log('Employee has been deleted!');
+    prompt();
+};
+
