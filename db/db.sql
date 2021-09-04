@@ -39,7 +39,28 @@ VALUES
     ('Sales'),
     ('Operations'),
     ('Purchasing'),
-    ('Business Office'),
-    ('Service');
+    ('Business Office');
 INSERT INTO role
     (title, salary, department_id)
+VALUES
+    ('General Manager', 150000, 1),
+    ('Sales Associate', 45000, 1),
+    ('Operations Manager', 125000, 2),
+    ('Service Technician', 65000, 2),
+    ('Purchasing Manager', 125000, 3),
+    ('Buyer', 95000, 3),
+    ('Business Office Manager', 125000, 4),
+    ('Business Office Associate', 30000, 4);
+INSERT INTO employee
+    (first_name, last_name, role_id, manager_id)
+VALUES
+    ('Xena', 'Russak-Pribble-Humble', 1, NULL),
+    ('Findekano', 'Humble', 2, 1),
+    ('Luna Vea', 'Russak-Pribble-Humble', 8, 7)
+    ('Leslie', 'Knope', 7, 1),
+    ('Ron', 'Swanson', 3, NULL),
+    ('Molly', 'Humble', 2, 1),
+    ('Andy', 'Dwyer', 4, 3),
+    ('Tom', 'Haverford', 2, 1),
+    ('Tammy', 'Swanson', 5, 1),
+    ('Donna', 'Meagle', 6, 5);
