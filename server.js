@@ -256,3 +256,44 @@ async function deleteEmployee() {
     prompt();
 };
 
+function getId() {
+    return ([
+        {
+            name: "employee id",
+            type: "input",
+            message: "What is the employee ID?"
+        }
+    ]);
+}
+
+// function to update Employee's role
+
+async function updateRole() {
+    const employeeId = await inquirer.prompt(getId());
+
+    connection.query('SELECT role.id, role.title FROM role ORDER BY role.id;', async (err, res) => {
+        if (err) throw err;
+        const { role } = await inquirer.prompt([
+            {
+                name: 'role',
+                type: 'list',
+                choices: () => res.map(res => res.title),
+                message: `What is the new employee's role?:`
+            }
+        ]);
+        let roleId;
+        for (const row of res) {
+            if (row.title === role) {
+                roleId = row.id;
+                continue;
+            }
+        }
+        connection.query(`UPDATE employee
+        SET role_id = ${roleId}
+        WHERE employee.id = ${employeeId.name}`, async (err, res) => {
+            if (err) throw err;
+            console.log(`The employee's role has been successfully updated!`);
+            prompt();
+        });
+    });
+}
