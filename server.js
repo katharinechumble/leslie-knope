@@ -297,3 +297,19 @@ async function updateRole() {
         });
     });
 }
+
+// function to prompt for the employee's name
+function askName() {
+    return ([
+        {
+            name: "first name",
+            type: "input",
+            message: "Please enter the employee's first name:"
+        },
+        {
+            name: "last name",
+            type: "input",
+            message: "Please enter the employee's last name:"
+        }
+    ]);
+}
