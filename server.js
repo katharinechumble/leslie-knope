@@ -149,5 +149,87 @@ function viewAllRoles() {
 // add functions to add, remove, and edit employees
 
 async function addEmployee() {
+    const addname = await inquirer.prompt(askName());
+    connection.query('SELECT role.id, role.title FROM role ORDER BY role.id', async (err, res) => {
+        if (err) throw err;
+        const { role } = await inquirer.prompt([
+            {
+                name: 'role',
+                type: 'list',
+                choices: () => res.map(res => res.title),
+                message: `What is the new employee's role?`
+            }
+        ]);
+        let roleId;
+        for (const row of res) {
+            if (row.title === role) {
+                roleId = row.id;
+                continue;
+            }
+        }
+        connection.query('SELECT * FROM employee', async (err, res) => {
+            if (err) throw err;
+            let choices = res.map(res => `${res.first_name} ${res.last_name}`);
+            choices.push('none');
+            let { manager } = await inquirer.prompt([
+                {
+                    name: 'manager',
+                    type: 'list',
+                    choices: choices,
+                    message: `Choose the new employee's manager:`
+                }
+            ]);
+            let managerId;
+            let managerName;
+            if (manager === 'none') {
+                managerId = null;
+            } else {
+                for (const data of res) {
+                    data.fullName = `${data.first_name} ${data.last_name}`;
+                    if (data.fullName === manager) {
+                        managerId = data.id;
+                        managerName = data.fullName;
+                        console.log(managerId);
+                        console.log(managerName);
+                        continue;
+                    }
+                }
+            }
+            console.log('Employee has been added.  Please view all employees to verify!');
+            connection.query(
+                'INSERT INTO employee SET ?',
+                {
+                    first_name: addname.first,
+                    last_name: addname.last,
+                    role_id: roleId,
+                    manager_id: parseInt(managerId)
+                },
+                (err, res) => {
+                    if (err) throw err;
+                    prompt();
+                }
+            );
+        });
+    });
+}
 
+// function to verify whether user knows employee's ID
+
+function remove(input) {
+    const promptQ = {
+        yes: 'Yes.',
+        no: 'No. (View All Employees on Main Menu)'
+    };
+    inquirer.prompt([
+        {
+            name: "action",
+            type: "list",
+            message: `In order to process the new employee, please enter the new employee's ID.  Do you have the new employee's ID? (View All Employees to get)`,
+            choices: [promptQ.yes, promptQ.no]
+        }
+    ]).then(answer => {
+        if (input === 'delete' && answer.action === "yes") removeEmployee();
+        else if (input === 'role' && answer.action === 'yes') updateRole();
+        else viewAllEmployees();
+    })
 }
