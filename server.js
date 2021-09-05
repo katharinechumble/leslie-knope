@@ -48,6 +48,8 @@ const promptUser = () => {
             "Remove An Employee",
             "Update Employee's Role",
             "View All Roles",
+            "Add New Role",
+            "Add New Department",
             "Exit"
         ]
     }
@@ -74,6 +76,12 @@ const promptUser = () => {
         }
         if (choices === "Update An Employee's Role") {
             updateRole();
+        }
+        if (choices === "Add New Role") {
+            addRole();
+        }
+        if (choices === "Add New Dept") {
+            addDept();
         }
         if (choices === "Exit") {
             connection.end;
@@ -321,18 +329,71 @@ const updateRole = () => {
     });
 }
 
-// function to prompt for the employee's name
-// function askName() {
-//     return ([
-//         {
-//             name: "first name",
-//             type: "input",
-//             message: "Please enter the employee's first name:"
-//         },
-//         {
-//             name: "last name",
-//             type: "input",
-//             message: "Please enter the employee's last name:"
-//         }
-//     ]);
-// }
+// function to add a new department and role
+const addRole = () => {
+    const deptSql = 'SELECT * FROM department'
+    connection.query(deptSql, (err, res) => {
+        if (err) throw err;
+        let deptArray = [];
+        response.forEach((department) => {deptArray.push(department.department_name);});
+        deptArray.push('New Department');
+        inquirer.prompt([
+            {
+                name: 'deptName',
+                type: 'list',
+                message: 'Which department will the new role be in?',
+                choices: deptArray
+            }
+        ]).then((answer) => {
+            if (answer.deptName === 'New Department') {
+                this.addDept();
+            } else {
+                addNewRole(answer);
+            }
+        });
+        const addNewRole = (departmentData) => {
+            inquirer.prompt ([
+                {
+                    name: 'newRole',
+                    type: 'input',
+                    message: "What is the new role you wish to add?"
+                },
+                {
+                    name: 'salary',
+                    type: 'input',
+                    message: "What will be the new role's salary?"
+                }
+            ]).then((answer) => {
+                let createRole = answer.newRole;
+                let departmentId;
+                response.forEach((department) => {
+                    if (departmentData.departmentName === department.department_name) {departmentId = department.id;}
+                });
+                let newRoleSql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+                let crit = [createRole, answer.salary, departmentId];
+
+                connection.query(newRoleSql, crit, (err) => {
+                    if (err) throw err;
+                    console.log("The new role has been succesfully added!");
+                    viewAllRoles();
+                });
+            });
+        };
+    });
+}
+
+const addDept = () => {
+    inquirer.prompt([
+        {
+            name: 'newDept',
+            type: 'input',
+            message: 'What is the name of the new department?'
+        }
+    ]).then((answer) => {
+        let newDeptSql = `INSERT INTO department (department_name) VALUES (?)`;
+        connection.query(newDeptSql, answer.newDept, (err, res) => {
+            if (err) throw err;
+            console.log(answer.newDept + "New department has been successfully created!");
+        });
+    });
+};
