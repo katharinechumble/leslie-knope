@@ -12,3 +12,4 @@ A simple app to allow tracking of employees by role, manager, and name.  Start t
 
 ## Preview
 ![preview.png](./preview.png)
+Video: (https://youtu.be/zE6Is4rI5nc)
