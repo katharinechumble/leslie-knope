@@ -1,17 +1,12 @@
---drops any prexisting database--
-DROP DATABASE IF EXISTS employee-tracker-db;
---creates database--
-CREATE DATABASE employee-tracker-db;
---commands app to use the selected database--
-USE employee-tracker-db;
+DROP DATABASE IF EXISTS employee_tracker_db;
+CREATE DATABASE employee_tracker_db;
+USE employee_tracker_db;
 
--- create department table --
 CREATE TABLE department (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(30) UNIQUE NOT NULL
 );
 
--- Create roles table --
 CREATE TABLE role (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30) UNIQUE NOT NULL,
@@ -21,18 +16,19 @@ CREATE TABLE role (
     CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
 );
 
---create employee table--
 CREATE TABLE employee (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    roll_id INT UNSIGNED NOT NULL,
+    role_id INT UNSIGNED NOT NULL,
     INDEX role_ind (role_id),
-    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCE employee(id) ON DELETE SET NULL
+    CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
+    manager_id INT UNSIGNED,
+    INDEX man_ind (manager_id),
+    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
 );
 
---Add values--
-use employee-tracker-db;
+use employee_tracker_db;
 INSERT INTO department
     (name)
 VALUES
@@ -56,7 +52,7 @@ INSERT INTO employee
 VALUES
     ('Xena', 'Russak-Pribble-Humble', 1, NULL),
     ('Findekano', 'Humble', 2, 1),
-    ('Luna Vea', 'Russak-Pribble-Humble', 8, 7)
+    ('Luna Vea', 'Russak-Pribble-Humble', 8, 7),
     ('Leslie', 'Knope', 7, 1),
     ('Ron', 'Swanson', 3, NULL),
     ('Molly', 'Humble', 2, 1),
