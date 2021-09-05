@@ -24,8 +24,7 @@ CREATE TABLE employee (
     INDEX role_ind (role_id),
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
     manager_id INT UNSIGNED,
-    INDEX man_ind (manager_id),
-    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
+    INDEX man_ind (manager_id)
 );
 
 use employee_tracker_db;
@@ -52,11 +51,11 @@ INSERT INTO employee
 VALUES
     ('Xena', 'Russak-Pribble-Humble', 1, NULL),
     ('Findekano', 'Humble', 2, 1),
-    ('Luna Vea', 'Russak-Pribble-Humble', 8, 7),
+    ('Luna Vea', 'Russak-Pribble-Humble', 8, 4),
     ('Leslie', 'Knope', 7, 1),
     ('Ron', 'Swanson', 3, NULL),
     ('Molly', 'Humble', 2, 1),
-    ('Andy', 'Dwyer', 4, 3),
+    ('Andy', 'Dwyer', 4, 5),
     ('Tom', 'Haverford', 2, 1),
     ('Tammy', 'Swanson', 5, 1),
-    ('Donna', 'Meagle', 6, 5);
+    ('Donna', 'Meagle', 6, 9);
